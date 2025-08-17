@@ -53,3 +53,8 @@ You can then execute your native executable with: `./target/user-1.0-SNAPSHOT-ru
 
 If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
 
+## Dev UI
+You can access the Dev UI at <http://localhost:8080/q/dev-ui/welcome>.
+
+## Swagger UI
+You can access the Swagger UI at <http://localhost:8080/q/swagger-ui/>.
