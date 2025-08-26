@@ -10,6 +10,8 @@ import lombok.extern.java.Log;
 import net.datafaker.Faker;
 import org.bson.types.ObjectId;
 
+import java.math.BigDecimal;
+
 @Log
 @ApplicationScoped
 public class UserService {
@@ -43,6 +45,16 @@ public class UserService {
         return this.userRepository.findByIdOptional(new ObjectId(userId))
                 .map(this.userMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+    }
+
+    public UserDto addBalance(String userId, BigDecimal amount) {
+        User user = this.userRepository.findByIdOptional(new ObjectId(userId))
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+
+        user.addBalance(amount);
+        this.userRepository.update(user);
+        return this.userMapper.toDto(user);
+
     }
 
     private static String normalizeName(String name) {

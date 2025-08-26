@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -23,5 +21,9 @@ public class User {
     private String email;
     private BigDecimal balance = BigDecimal.ZERO;
     private List<Share> shares = new ArrayList<>();
+
+    public void addBalance(BigDecimal amount) {
+        this.balance = this.balance.add(amount);
+    }
 
 }
