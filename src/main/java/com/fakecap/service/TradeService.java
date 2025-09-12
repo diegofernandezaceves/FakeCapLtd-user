@@ -1,9 +1,6 @@
 package com.fakecap.service;
 
-import com.fakecap.OrderStatus;
-import com.fakecap.ShareRequest;
-import com.fakecap.ShareResponse;
-import com.fakecap.TradeServiceGrpc;
+import com.fakecap.*;
 import com.fakecap.dto.ShareRequestDto;
 import com.fakecap.dto.ShareResponseDto;
 import io.quarkus.grpc.GrpcClient;
@@ -18,10 +15,10 @@ import lombok.extern.java.Log;
 @ApplicationScoped
 public class TradeService {
 
-    private final TradeServiceGrpc tradeServiceGrpc;
+    private final TradeOperation tradeOperation;
 
-    public TradeService(@GrpcClient("trade-service-grpc") TradeServiceGrpc tradeServiceGrpc) {
-        this.tradeServiceGrpc = tradeServiceGrpc;
+    public TradeService(@GrpcClient("trade-operation") TradeOperation tradeOperation) {
+        this.tradeOperation = tradeOperation;
     }
 
     public Uni<ShareResponseDto> buyOrSellShare(String userId, ShareRequestDto shareRequestDto) {
@@ -32,7 +29,7 @@ public class TradeService {
                 .setInvestmentAmount(shareRequestDto.amount().intValue())
                 .build();
 
-        return this.tradeServiceGrpc.submit(shareRequest)
+        return this.tradeOperation.submit(shareRequest)
                 .map(shareResponse -> processResponse(shareRequest, shareResponse))
                 .invoke(shareResponseDto -> logResponseDto(userId, shareResponseDto))
                 .onFailure().recoverWithItem(Unchecked.function(throwable -> {

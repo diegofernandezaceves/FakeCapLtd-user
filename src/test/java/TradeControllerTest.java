@@ -1,17 +1,11 @@
-import com.fakecap.OrderStatus;
-import com.fakecap.ShareRequest;
-import com.fakecap.ShareResponse;
-import com.fakecap.TradeServiceGrpc;
+import com.fakecap.*;
 import com.fakecap.dto.ShareRequestDto;
 import com.fakecap.dto.UserDto;
-import io.grpc.internal.GrpcUtil;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.quarkus.grpc.GrpcClient;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.smallrye.mutiny.operators.uni.builders.UniCreateFromKnownItem;
-import io.vertx.grpc.server.GrpcServerResponse;
 import jakarta.inject.Inject;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
@@ -33,8 +27,8 @@ public class TradeControllerTest {
     Faker faker;
 
     @InjectMock
-    @GrpcClient("trade-service-grpc")
-    TradeServiceGrpc tradeServiceGrpc;
+    @GrpcClient("trade-operation")
+    TradeOperation tradeOperation;
 
     @Test
     @DisplayName("User trade is successful")
@@ -48,7 +42,7 @@ public class TradeControllerTest {
                 .setStatus(OrderStatus.SUCCESS)
                 .build();
 
-        when(tradeServiceGrpc.submit(any(ShareRequest.class))).thenReturn(new UniCreateFromKnownItem<>(shareResponse));
+        when(tradeOperation.submit(any(ShareRequest.class))).thenReturn(new UniCreateFromKnownItem<>(shareResponse));
 
         given()
                 .contentType(ContentType.JSON)
@@ -73,7 +67,7 @@ public class TradeControllerTest {
                 .setStatus(OrderStatus.FAILURE)
                 .build();
 
-        when(tradeServiceGrpc.submit(any(ShareRequest.class))).thenReturn(new UniCreateFromKnownItem<>(shareResponse));
+        when(tradeOperation.submit(any(ShareRequest.class))).thenReturn(new UniCreateFromKnownItem<>(shareResponse));
 
         given()
                 .contentType(ContentType.JSON)
@@ -90,7 +84,7 @@ public class TradeControllerTest {
         UserDto user = createUser();
         ShareRequestDto shareRequestDto = new ShareRequestDto("fake", new BigDecimal(faker.number().positive()));
 
-        when(tradeServiceGrpc.submit(any(ShareRequest.class))).thenThrow(new RuntimeException("gRPC service is down"));
+        when(tradeOperation.submit(any(ShareRequest.class))).thenThrow(new RuntimeException("gRPC service is down"));
 
         given()
                 .contentType(ContentType.JSON)

@@ -6,7 +6,7 @@ option java_outer_classname = "TradeGrpcProto";
 
 package trade;
 
-service TradeServiceGrpc {
+service TradeOperation {
   rpc submit(ShareRequest) returns (ShareResponse);
 }
 
